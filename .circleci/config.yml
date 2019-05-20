@@ -6,8 +6,8 @@ jobs:
     steps:
       - checkout
       - run: 
-        name: Installing third party 
-        command: 'cd Raytracer/third; make --linux-g++'
+          name: Installing third party 
+          command: 'cd Raytracer/third; make --linux-g++'
       - run:
-        name: Build raytracer
-        command: 'cd ..; make'
+          name: Build raytracer
+          command: 'cd ..; make'
