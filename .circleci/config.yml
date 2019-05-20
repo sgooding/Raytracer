@@ -10,7 +10,7 @@ jobs:
           command: 'pwd; ls'
       - run: 
           name: Installing third party 
-          command: 'cd RayTracer/third/ann/; make --linux-g++'
+          command: 'cd RayTracer/third/ann/; make linux-g++'
       - run:
           name: Build raytracer
           command: 'cd ..; cd ..; make'
