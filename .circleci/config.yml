@@ -1,0 +1,14 @@
+version: 2
+
+jobs: 
+  build:
+    docker:
+        - image: "circleci/buildpack-deps"
+      steps:
+        - checkout
+        - run: 
+          name: Installing third party 
+          command: 'cd Raytracer/third; make --linux-g++'
+        - run:
+          name: Build raytracer
+          command: 'cd ..; make'
