@@ -6,8 +6,11 @@ jobs:
     steps:
       - checkout
       - run: 
+          name: Where are we
+          command: 'pwd; ls'
+      - run: 
           name: Installing third party 
-          command: 'cd Raytracer/Raytracer/third; make --linux-g++'
+          command: 'cd Raytracer/third/ann/; make --linux-g++'
       - run:
           name: Build raytracer
-          command: 'cd ..; make'
+          command: 'cd ..; cd ..; make'
