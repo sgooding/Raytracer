@@ -17,6 +17,7 @@
 #include <math.h>
 #include <vector>
 #include <list>
+#include <algorithm>
 
 #define VERY_SMALL_NUMBER 0.0000001
 
