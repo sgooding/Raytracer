@@ -13,4 +13,4 @@ jobs:
           command: 'cd RayTracer/third/ann/; make linux-g++'
       - run:
           name: Build raytracer
-          command: 'cd ..; cd ..; make'
+          command: 'cd RayTracer; make'
