@@ -11,13 +11,19 @@
 #include <math.h>
 #include <assert.h>
 #include <fstream>
+#include <sstream>
 
 #define VERY_SMALL_NUMBER 0.0000001
 
 namespace smg
 {
+   int get_unique_name()
+   {
+       static int index = 0;
+       return index++;
+   }
 
-   Vector ray::get_endpoint(const double t) const
+   Vector ray::get_endpoint(const float t) const
    {
        return Vector(origin + direction*t);
    }
@@ -58,7 +64,7 @@ namespace smg
 
     }
 
-    material_prob::type primitive::prob_test( double element )
+    material_prob::type primitive::prob_test( float element )
     {
         if( element <= m.prob.absorption)
         {
@@ -106,9 +112,9 @@ namespace smg
         Vector Normal( GetNormal( position ) );
         Vector L( reflected*(-1.0) );
         Vector H( (incident+L).norm() );
-        double Is( m.k_spec*pow( H.dot(Normal), m.n_spec) );
+        float Is( m.k_spec*pow( H.dot(Normal), m.n_spec) );
 
-        double normal_2_ls( Normal.dot( L ) );
+        float normal_2_ls( Normal.dot( L ) );
         return Vector(  m.k_diff_R*( normal_2_ls ) + Is,
                         m.k_diff_G*( normal_2_ls ) + Is,
                         m.k_diff_B*( normal_2_ls ) + Is );
@@ -138,7 +144,7 @@ namespace smg
         Vector L( reflected*(-1.0) );
         Vector H( (incident+L).norm() );
 
-        double normal_2_ls( Normal.dot( L ) );
+        float normal_2_ls( Normal.dot( L ) );
         return Vector(  m.k_diff_R*( normal_2_ls ), // Idr 
                         m.k_diff_G*( normal_2_ls ), // Idg 
                         m.k_diff_B*( normal_2_ls ) ); // Idb
@@ -169,6 +175,8 @@ namespace smg
         mNorm(),
         mD(0)
     {
+        std::stringstream ss; ss << get_unique_name() << "_Triangle";
+        name = ss.str();
     }
 
     triangle::triangle(Vector a, Vector b, Vector c, Vector view):
@@ -178,43 +186,25 @@ namespace smg
         mNorm(),
         mD(0)
     {
+        std::stringstream ss; ss << get_unique_name() << "_Triangle";
+        name = ss.str();
         Vector a1a2( a2-a1 );
-        std::cout << "a1a2 = " << a1a2 << std::endl;
         Vector a1a3( a3-a1 );
-        std::cout << "a1a3 = " << a1a3 << std::endl;
-        std::cout << "a1a2dot = " << a1a2.dot(a1a3) << std::endl;
         Vector N( a1a2.cross(a1a3) );
-        std::cout << "N = " << N << std::endl;
-        std::cout << "Nmag = " << N.mag() << std::endl;
-        //N = N*(1.0/N.mag());
-        std::cout << "Nnorm = " << N.norm() << std::endl;
 
-        /*
-        if ( N.dot( view - a1 ) >= 0.0001 )
-        {
-            mNorm = N;
-        } else 
-        {
-            mNorm =  N*(-1.0);
-        } 
-        */
-        //mNorm = mNorm*(-1.0);
         mNorm = N.norm();
         mD = -mNorm.dot(a1);
-
-        std::cout << "mNorm = " << mNorm << std::endl;
-        
     }
 
     triangle::~triangle()
     {
     }
 
-    double triangle::intersection(ray r) const
+    float triangle::intersection(ray r) const
     {
-        double den = r.direction.dot(mNorm);
+        float den = r.direction.dot(mNorm);
 
-        double t = -( r.origin.dot( mNorm ) + mD );
+        float t = -( r.origin.dot( mNorm ) + mD );
 
         if( fabs(den) < VERY_SMALL_NUMBER )
         {
@@ -242,7 +232,7 @@ namespace smg
 
         // Exists a degenerate case if point 
         // is aligned with 2 other points.
-        double v12m = v12.mag();
+        float v12m = v12.mag();
         if( fabs( v12m ) < VERY_SMALL_NUMBER )
         {
             if( pa1.dot(pa2) > VERY_SMALL_NUMBER  )
@@ -254,7 +244,7 @@ namespace smg
             }
         }
         
-        double v23m = v23.mag();
+        float v23m = v23.mag();
         if( fabs( v23m ) < VERY_SMALL_NUMBER  )
         {
             if( pa2.dot(pa3) > VERY_SMALL_NUMBER )
@@ -266,7 +256,7 @@ namespace smg
             }
         }
 
-        double v31m = v31.mag();
+        float v31m = v31.mag();
         if( fabs( v31m ) < VERY_SMALL_NUMBER  )
         {
             if( pa3.dot(pa1) > VERY_SMALL_NUMBER )
@@ -298,9 +288,10 @@ namespace smg
 
     void triangle::Print(std::ostream& strm) const
     {
-        strm << "a1: " << a1 << std::endl;
-        strm << "a2: " << a2 << std::endl;
-        strm << "a3: " << a3 << std::endl;
+        strm << "Name: " << name << std::endl;
+        strm << "a1:   " << a1 << std::endl;
+        strm << "a2:   " << a2 << std::endl;
+        strm << "a3:   " << a3 << std::endl;
     }
 
 
@@ -315,6 +306,8 @@ namespace smg
         radius(0.0),
         mprint(false)
     {
+        std::stringstream ss; ss << get_unique_name() << "_Sphere";
+        name = ss.str();
     }
     
     // The "view" determines what side of the
@@ -326,11 +319,13 @@ namespace smg
         return mNorm;
     }
 
-    sphere::sphere(Vector c, double r):
+    sphere::sphere(Vector c, float r):
         center(c),
         radius(r),
         mprint(false)
     {
+        std::stringstream ss; ss << get_unique_name() << "_Sphere";
+        name = ss.str();
     }
 
     sphere::~sphere()
@@ -339,6 +334,7 @@ namespace smg
 
     void sphere::Print(std::ostream& strm) const
     {
+        strm << "Name  : " << name << std::endl;
         strm << "Glass : " << m.glass << std::endl;
         strm << "Mirror: " << m.mirror << std::endl;
         strm << "Center: " << center << std::endl;
@@ -351,23 +347,23 @@ namespace smg
         Print(std::cout);
     }
 
-    double sphere::intersection(ray r) const
+    float sphere::intersection(ray r) const
     {
         Vector co( r.origin - center );
-        double co_m( co.mag() );
-        double C = co_m*co_m - radius*radius;
+        float co_m( co.mag() );
+        float C = co_m*co_m - radius*radius;
         
-        double B = co.dot(r.direction);
+        float B = co.dot(r.direction);
         B *= 2.0;
 
-        double A = r.direction.mag();
+        float A = r.direction.mag();
         A *= A;
 
-        double delta( B*B - 4.0*A*C );
+        float delta( B*B - 4.0*A*C );
         if( delta > 0.0 )
         {
-            double t1 = (-B + sqrt( delta ) )/ (2*A); 
-            double t2 = (-B - sqrt( delta ) )/ (2*A); 
+            float t1 = (-B + sqrt( delta ) )/ (2*A); 
+            float t2 = (-B - sqrt( delta ) )/ (2*A); 
 
             if( t1 < 0.0 && t2 < 0.0 )
             {
@@ -388,7 +384,7 @@ namespace smg
             }
         } else if( fabs( delta ) < VERY_SMALL_NUMBER )
         {
-            double t(-B/(2.0*A));
+            float t(-B/(2.0*A));
             return t;
         }        
 
@@ -399,7 +395,7 @@ namespace smg
     Vector sphere::GetNormal(const Vector& point) const
     {
         Vector cp( point - center );
-        double mag( cp.mag() );
+        float mag( cp.mag() );
         if( mag < VERY_SMALL_NUMBER )
         {
            assert(0);
@@ -415,7 +411,7 @@ namespace smg
     {
     }
 
-    plane::plane(Vector a, double b):
+    plane::plane(Vector a, float b):
         norm(a),
         d(b),
         nnorm()
@@ -427,15 +423,15 @@ namespace smg
     {
     }
 
-    double plane::intersection(ray r) const
+    float plane::intersection(ray r) const
     {
-        double den = r.direction.dot( norm );
+        float den = r.direction.dot( norm );
         if( fabs( den ) <= VERY_SMALL_NUMBER )
         {
             return -1.0;
         }
 
-        double t = norm.dot( r.origin );
+        float t = norm.dot( r.origin );
         t += d;
         t *= -1.0;
         t /= den;
@@ -473,33 +469,33 @@ namespace smg
         Vector Wsum( Win + Wout );
         Vector H( Wsum.norm() );
 
-        double u( Win.dot( H ) );
-        double t( Normal.dot( H ) );
+        float u( Win.dot( H ) );
+        float t( Normal.dot( H ) );
 
-        double v( Win.dot( Normal ) );
-        double vout( Wout.dot( Normal ) ) ;
+        float v( Win.dot( Normal ) );
+        float vout( Wout.dot( Normal ) ) ;
 
 
         //Vector T( 0.0, 0.0, 0.0 ); // Scratch Direction
         //Vector w; 
 
-        double eta_1 = General::uniform_rand( 0.0, 1.0 );
-        double eta_2 = General::uniform_rand( 0.0, 1.0 );
+        float eta_1 = General::uniform_rand( 0.0, 1.0 );
+        float eta_2 = General::uniform_rand( 0.0, 1.0 );
 
-        double Psi = 0.0;
-        double sigma = 0.0;
-        double eta_2_2 = eta_2*eta_2;
-        double Psi_2 = Psi*Psi;
+        float Psi = 0.0;
+        float sigma = 0.0;
+        float eta_2_2 = eta_2*eta_2;
+        float Psi_2 = Psi*Psi;
 
         // Glossy Reflected Direction Terms
-        double t_g = sqrt( eta_1/ ( sigma - eta_1*sigma + eta_1 ) );
-        double w = cos( M_PI/2.0*sqrt( Psi_2*eta_2_2/
+        float t_g = sqrt( eta_1/ ( sigma - eta_1*sigma + eta_1 ) );
+        float w = cos( M_PI/2.0*sqrt( Psi_2*eta_2_2/
                     ( 1.0 - eta_2_2 + eta_2_2*Psi_2) ) );
 
 
     }
 
-    double General::uniform_rand(double begin, double end)
+    float General::uniform_rand(float begin, float end)
     {
         return ( begin + ( (end-begin) * (rand() / (RAND_MAX + 1.0))) );
     }

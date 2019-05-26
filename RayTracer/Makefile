@@ -5,7 +5,7 @@ LIBS=-lm -lANN
 LIBDIR=-Lthird/ann/lib
 CXXDIR=-Ithird/ann/include
 
-raytrace: PhotonMapAnn.o PhotonMapHeinrik.o Vector.o Primitives.o RayTrace.o main.o 
+raytrace: PhotonMapAnn.o Vector.o Primitives.o RayTrace.o main.o 
 	$(CXX) $(OPT) $^ -o $@ $(LIBDIR) $(LIBS) 
 
 .cpp.o:

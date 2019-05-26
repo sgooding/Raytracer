@@ -11,7 +11,6 @@
 
 
 #include "Primitives.h"
-#include "PhotonMapHeinrik.h"
 #include "PhotonMapAnn.h"
 
 #include <math.h>
@@ -27,7 +26,8 @@ class RayTrace
 {
     public:
 
-        Vector trace_ray( const int current_object, ray original_ray );
+        Vector trace_ray( const int& current_object, 
+                          const ray& original_ray );
 
         /// Default Constructor
         RayTrace();
@@ -35,33 +35,33 @@ class RayTrace
         /// Default destructor
         ~RayTrace();
     
-        void ComputeBRDF( const primitive& Primitive, const Vector& position, const Vector& incoming_direction, const Vector& outgoing_direction, bool in_shade, double& R, double& G, double& B );
+        void ComputeBRDF( const primitive& Primitive, const Vector& position, const Vector& incoming_direction, const Vector& outgoing_direction, bool in_shade, float& R, float& G, float& B );
 
         bool InitializeMap(int maxNumPhotons );
 
         void compute_multipath( const primitive& Primitive, 
                                 ray origin, 
-                                double distance,  
+                                float distance,  
                                 int depth, 
                                 Vector location, 
                                 bool in_shadow, 
-                                double&R, 
-                                double&G, 
-                                double&B );
+                                float&R, 
+                                float&G, 
+                                float&B );
 
         void TraceRay( const primitive& Primitive, 
                        ray origin,
-                       double t,
+                       float t,
                        Vector p,
                        bool in_shadow,
-                       double& R,
-                       double& G,
-                       double& B,
+                       float& R,
+                       float& G,
+                       float& B,
                        bool test = false
                      );
                   
                   
-        double FindIntensity();
+        float FindIntensity();
         bool LoadLightSource();
 
         inline void GetLightSource( Vector& ls ) { ls = mLightSource; }
@@ -69,15 +69,15 @@ class RayTrace
         inline void ViewPoint( Vector vp ) { mViewPoint = vp; }
         inline Vector GetViewPoint( ) { return mViewPoint; }
         inline void LightSource( Vector ls ) { mLightSource = ls; }
-        inline void AmbientLight( double al ) { mAmbientLight = al; }
-        inline void LightSourceIntensity( double lsi ) { mLightSourceIntensity = lsi; }
+        inline void AmbientLight( float al ) { mAmbientLight = al; }
+        inline void LightSourceIntensity( float lsi ) { mLightSourceIntensity = lsi; }
         inline void ScreenLowerLeftCorner( Vector in ) { mScreenLowerLeftCorner = in; }
         inline void ScreenHorizontalVector( Vector in ) { mScreenHorizontalVector = in; }
         inline void ScreenVerticalVector( Vector in ) { mScreenVerticalVector = in; }
         inline void ResolutionX( int in ) { mResolutionX = in; }
         inline void ResolutionY( int in ) { mResolutionY = in; }
-        inline void AliasSize( double alias ) { mAliasSize = alias; } 
-        inline double GetAliasSize() { return mAliasSize; } 
+        inline void AliasSize( float alias ) { mAliasSize = alias; } 
+        inline float GetAliasSize() { return mAliasSize; } 
         inline bool MapInitialized() { 
             return ( mPhotonMap == NULL ) && (mCausticMap == NULL ); 
         }
@@ -86,7 +86,7 @@ class RayTrace
         inline int GetMaxNumberPhotons() { return mMaxNumberPhotons; }
 
 
-        void DirectionVector( double x, double y, ray& eq );
+        void DirectionVector( float x, float y, ray& eq );
         
     
         void AddPrimitive( smg::primitive* pprimitive );
@@ -98,9 +98,20 @@ class RayTrace
         void SetEnablePhotonMapper(bool enable_map){ mEnablePhotonMapper = enable_map; }
         bool GetEnablePhotonMapper(){ return mEnablePhotonMapper; }
 
+        void SetEnableCaustic(const int& enableCaustic){ mEnableCaustic = (bool)enableCaustic; }
+
         void SetBackgroundColor( Vector& color ){ mBackgroundColor = color; }
         Vector GetBackgroundColor( ){ return mBackgroundColor; }
 
+        void SetEnableRayTrace(const int& enabledRayTrace)
+        {
+            mEnableRayTrace = (bool)enabledRayTrace;
+        }
+
+        void SetEnablePhotonMap(const int& enablePhotonMap)
+        {
+            mEnablePhotonMap = (bool)enablePhotonMap;
+        }
     private:
 
         RayTrace(const RayTrace& other) :
@@ -143,9 +154,9 @@ class RayTrace
         }
 
         Vector mLightSource;
-        double mLightSourceIntensity;
+        float mLightSourceIntensity;
         Vector mViewPoint;
-        double mAmbientLight;
+        float mAmbientLight;
         Vector mScreenLowerLeftCorner;
         Vector mScreenHorizontalVector;
         Vector mScreenVerticalVector;
@@ -154,9 +165,13 @@ class RayTrace
 
         bool mEnablePhotonMapper;
 
+        bool mEnableRayTrace;
+        bool mEnablePhotonMap;
+        bool mEnableCaustic;
+
         int mResolutionY;
         int mResolutionX;
-        double mAliasSize;
+        float mAliasSize;
 
         int mMaxNumberPhotons;
 
@@ -170,20 +185,20 @@ class RayTrace
         std::vector<smg::primitive*> mPrimitives;
 
     bool TestInShadow( int PrimitiveInx, Vector location);
-        bool FindNearestObject( const ray& start, int& primitive_index, double& distance );
+        bool FindNearestObject( const ray& start, int& primitive_index, float& distance );
  
-        Vector ComputeEmittance(  const primitive& object, const ray& trace, const double distance );
+        Vector ComputeEmittance(  const primitive& object, const ray& trace, const float distance );
 
-        Vector PhotonDirection( double Theta, double Phi );
+        Vector PhotonDirection( float Theta, float Phi );
         
-        Vector GetPointColor( const primitive& Primitive, const ray& original_ray, double distance );
+        Vector GetPointColor( const primitive& Primitive, const ray& original_ray, float distance );
 
-        ray GetReflectedRay( const primitive& Primitive, const ray& original_ray, double distance );
-    //ray GetRefractedRay(  const primitive& Primitive, const ray& original_ray, double distance, const int current_object, const int new_object );
+        ray GetReflectedRay( const primitive& Primitive, const ray& original_ray, float distance );
+    //ray GetRefractedRay(  const primitive& Primitive, const ray& original_ray, float distance, const int current_object, const int new_object );
 
-    ray GetRefractedRay(int prev_primitive, int curr_primitive,  const ray& original_ray, double distance);
+    ray GetRefractedRay(int prev_primitive, int curr_primitive,  const ray& original_ray, float distance);
     
-    ray GetDiffuseReflectedRay( const primitive& Primitive, const ray& original_ray, double distance );
+    ray GetDiffuseReflectedRay( const primitive& Primitive, const ray& original_ray, float distance );
 };
 
 }

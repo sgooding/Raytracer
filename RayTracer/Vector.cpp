@@ -28,7 +28,7 @@ namespace smg {
     {
     }
 
-    Vector Vector::add ( const Vector a) const
+    Vector Vector::add ( const Vector& a) const
     {
         Vector result;
         result.x = x+a.x;
@@ -38,7 +38,7 @@ namespace smg {
     }
 
 
-    Vector Vector::subtract ( Vector a) const
+    Vector Vector::subtract ( const Vector& a) const
     {
         Vector result;
         result.x = x-a.x;
@@ -47,24 +47,24 @@ namespace smg {
         return result;
     }
 
-    Vector Vector::operator-(Vector other) const
+    Vector Vector::operator-(const Vector& other) const
     {
         return subtract(other);
     }
 
 
 
-    double Vector::dot ( Vector a ) const
+    float Vector::dot ( const Vector& a ) const
     {
         return a.x*x+a.y*y+a.z*z;
     }
 
-    Vector Vector::operator+(const Vector other) const
+    Vector Vector::operator+(const Vector& other) const
     {
         return add(other);
     }
 
-    Vector Vector::cross( Vector a )
+    Vector Vector::cross( const Vector& a ) const
     {
         Vector result;
         result.x = y*a.z - z*a.y;
@@ -83,7 +83,7 @@ namespace smg {
         return Vector( x*other.x, y*other.y, z*other.z );
     }
 
-    Vector Vector::operator*( const double scaler ) const
+    Vector Vector::operator*( const float& scaler ) const
     {
         Vector result( scaler*x, 
                 scaler*y, 
@@ -91,7 +91,7 @@ namespace smg {
         return result;
     }
 
-    Vector Vector::operator/( double scaler )
+    Vector Vector::operator/( const float& scaler )
     {
         assert( scaler != 0.0 );
 
@@ -113,12 +113,12 @@ namespace smg {
             Print(std::cout);
         }
 
-    double Vector::mag()
+    float Vector::mag()
     {
         return sqrt( x*x + y*y + z*z );
     }
 
-    Vector Vector::sphere2cart( double Theta, double Phi ) 
+    Vector Vector::sphere2cart( const float& Theta, const float& Phi ) 
     {
         return Vector( sin(Theta)*cos(Phi),
                 sin(Theta)*sin(Phi),

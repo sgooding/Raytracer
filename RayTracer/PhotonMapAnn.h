@@ -17,12 +17,12 @@ namespace smg {
 class PhotonMapAnn : public Photon_map
 {
     public:
-        double mSumFound;
-        double mAvgCount;
-        double mMax;
-        double mMin;
-        Vector mAvgDir;
+
+        PhotonMapAnn(const PhotonMapAnn& other);
+        PhotonMapAnn operator=(const PhotonMapAnn& other);
+
         PhotonMapAnn( const int max_photons );
+
         virtual ~PhotonMapAnn();
 
         void store(
@@ -50,32 +50,15 @@ class PhotonMapAnn : public Photon_map
         int get_stored_photons() { return mStoredPhotons; }
 
         void scale_photon_power( const float scale );
+        
+        float mSumFound;
+        float mAvgCount;
+        float mMax;
+        float mMin;
+        Vector mAvgDir;
 
     private:
-
-        PhotonMapAnn( const PhotonMapAnn& other ) :
-            mNumSearchPts(other.mNumSearchPts),
-            mAnnDim(other.mAnnDim),
-            mStoredPhotons(other.mStoredPhotons), 
-            mMaxPhotons( other.mMaxPhotons ),
-            mPhotons   ( other.mPhotons    ),
-            mDataPts   ( other.mDataPts    ),
-            mQueryPt   ( other.mQueryPt    ),
-            mNNIdx     ( other.mNNIdx      ),
-            mNNDistance( other.mNNDistance ),
-            mAnnTree   ( other.mAnnTree    )
-    {}
-
-
-
-        PhotonMapAnn operator=(const PhotonMapAnn& other)
-        {
-            mNumSearchPts=other.mNumSearchPts;
-            mAnnDim=other.mAnnDim;
-            mStoredPhotons=other.mStoredPhotons;
-        }
-
-
+    
         void ResizeQuery( const int NumPhotons );
 
         int             mMaxPhotons;

@@ -11,15 +11,15 @@ namespace smg{
        mMax(-99999.9),
        mMin(9999.9),
        mAvgDir(0.0,0.0,0.0),
-       mMaxPhotons(max_photons) ,
-       mPhotons(max_photons)    ,
-       mDataPts(NULL)           ,
-       mQueryPt(NULL)           ,
-       mNNIdx(NULL)             , 
-       mNNDistance(NULL)        ,
-       mAnnTree(NULL)           ,
-       mNumSearchPts(0)         ,
-       mAnnDim(0)               ,
+       mMaxPhotons(max_photons),
+       mPhotons(max_photons),
+       mDataPts(NULL),
+       mQueryPt(NULL),
+       mNNIdx(NULL), 
+       mNNDistance(NULL),
+       mAnnTree(NULL),
+       mNumSearchPts(0),
+       mAnnDim(0),
        mStoredPhotons(0)
     { 
         if( max_photons <= 0 )
@@ -100,7 +100,7 @@ namespace smg{
             assert(0);
         }
 
-        double max_dist_sq = MaxSearchDistance*MaxSearchDistance;
+        float max_dist_sq = MaxSearchDistance*MaxSearchDistance;
 
         if( NumPhotons != mNumSearchPts )
         {
@@ -108,7 +108,7 @@ namespace smg{
         }
 
         // Might need to change this to soften
-        double error_bound(0.0);
+        float error_bound(0.0);
         mQueryPt[0] = Position.x;
         mQueryPt[1] = Position.y;
         mQueryPt[2] = Position.z;
@@ -151,12 +151,12 @@ namespace smg{
 
         float pdir[3];
         Vector color_sum;
-        double Idr(0.0), Idb(0.0), Idg(0.0), Is(0.0);
+        float Idr(0.0), Idb(0.0), Idg(0.0), Is(0.0);
 
         //Vector sum;
         // sum irradiance for all photons
-        //double max_distance = -999.9;
-        double cone_filter_k = 2.0;
+        //float max_distance = -999.9;
+        float cone_filter_k = 2.0;
         for( int i = 0; i < num_photons_found; i++ )
         {
             const Photon& photon = (mPhotons[ mNNIdx[i] ]);
@@ -173,7 +173,7 @@ namespace smg{
                                                      Vector( photon.ddir[0], photon.ddir[1], photon.ddir[2] ),
                                                      IncomingDirection ) );
             // Cone Filter
-            double weight_photon = 1.0 - sqrt(mNNDistance[i])/cone_filter_k;
+            float weight_photon = 1.0 - sqrt(mNNDistance[i])/cone_filter_k;
             /*
             std::cout << "Distance : " << sqrt(mNNDistance[i])
                       << "\nPosition: " << photon.pos[0] << ", " << photon.pos[1] << ", " << photon.pos[2]
@@ -194,7 +194,7 @@ namespace smg{
                             Vector( -1.0*photon.ddir[0], -1.0*photon.ddir[1], -1.0*photon.ddir[2] ),
                             IncomingDirection ) );
                 // Cone Filter
-                double weight_photon = 1.0 - sqrt(mNNDistance[i])/cone_filter_k;
+                float weight_photon = 1.0 - sqrt(mNNDistance[i])/cone_filter_k;
                 /*
                    std::cout << "Distance : " << sqrt(mNNDistance[i])
                    << "\nPosition: " << photon.pos[0] << ", " << photon.pos[1] << ", " << photon.pos[2]
@@ -295,7 +295,7 @@ namespace smg{
         }
 
         // Might need to change this to soften
-        double error_bound(0.0);
+        float error_bound(0.0);
         mQueryPt[0] = pos[0];
         mQueryPt[1] = pos[1];
         mQueryPt[2] = pos[2];
@@ -332,8 +332,8 @@ namespace smg{
             return;
         }
 
-        double sum_dist(9999.9);
-        double avg_count(0.0);
+        float sum_dist(9999.9);
+        float avg_count(0.0);
         // sum irradiance from all photons
         for (int i=0; i<num_photons_found; i++) 
         {

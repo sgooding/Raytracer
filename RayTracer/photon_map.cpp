@@ -135,7 +135,7 @@ Photon_map :: Photon_map( const int max_phot )
   //----------------------------------------
 
   for (int i=0; i<256; i++) {
-    double angle = double(i)*(1.0/256.0)*M_PI;
+    float angle = float(i)*(1.0/256.0)*M_PI;
     costheta[i] = cos( angle );
     sintheta[i] = sin( angle );
     cosphi[i]   = cos( 2.0*angle );

@@ -19,10 +19,10 @@ namespace smg {
     typedef struct Photon {
         //**********************
         float pos[3];                  // photon position
-        double dpos[3];                  // photon position
+        float dpos[3];                  // photon position
         short plane;                   // splitting plane for kd-tree
         unsigned char theta, phi;      // incoming direction
-        double ddir[3];                // incoming direction
+        float ddir[3];                // incoming direction
         float power[3];                // photon power (uncompressed)
     } Photon;
 
@@ -51,7 +51,7 @@ namespace smg {
                 //----------------------------------------
 
                 for (int i=0; i<256; i++) {
-                    double angle = double(i)*(1.0/256.0)*M_PI;
+                    float angle = float(i)*(1.0/256.0)*M_PI;
                     costheta[i] = cos( angle );
                     sintheta[i] = sin( angle );
                     cosphi[i]   = cos( 2.0*angle );

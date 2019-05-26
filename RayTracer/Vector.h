@@ -15,7 +15,7 @@ namespace smg {
 
 class Vector {
   public:
-    double x,y,z;
+    float x,y,z;
     Vector();
 
     Vector( const Vector& other):
@@ -23,25 +23,25 @@ class Vector {
         y(other.y),
         z(other.z) {}
 
-    inline Vector(double ix, double iy, double iz):
+    inline Vector(float ix, float iy, float iz):
         x(ix),
         y(iy),
         z(iz) {}
 
-    Vector add (const Vector a ) const;
-    Vector subtract ( Vector a ) const;
-    double dot ( Vector a ) const;
-    Vector cross ( Vector a );
-    double mag ();
+    Vector add (const Vector& a ) const;
+    Vector subtract ( const Vector& a ) const;
+    float dot ( const Vector& a ) const;
+    Vector cross ( const Vector& a ) const;
+    float mag ();
     Vector norm();
     Vector times( const Vector& other ) const;
 
-    Vector operator+(const Vector other) const;
-    Vector operator-(Vector other) const;
-    Vector operator*(const double scaler) const;
-    Vector operator/(double scaler);
+    Vector operator+(const Vector& other) const;
+    Vector operator-(const Vector& other) const;
+    Vector operator*(const float& scaler) const;
+    Vector operator/(const float& scaler);
 
-    static Vector sphere2cart( double Theta, double Phi );
+    static Vector sphere2cart( const float& Theta, const float& Phi );
 
     void Print( std::ostream& ofs) const;
     void Print() const;

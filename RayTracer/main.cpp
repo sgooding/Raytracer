@@ -8,6 +8,7 @@
 
 #include <math.h>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <assert.h>
 #include "Vector.h"
@@ -21,7 +22,7 @@ using namespace std;
 /* ------------ typedefs -------------- */
 
 typedef struct {
-    double r,g,b;
+    float r,g,b;
 }
 RGB;
 
@@ -52,7 +53,7 @@ RGB &image::pixel ( int i, int j )
 
 /* ----------------------- */
 
-static unsigned char clampnround ( double x )
+static unsigned char clampnround ( float x )
 {
     if (x>255)
         x = 255;
@@ -71,11 +72,34 @@ void image::save_to_ppm_file ( std::string filename )
     assert(ofs);
     ofs << "P6" << endl;
     ofs << xsize << " " << ysize << endl << 255 << endl;
+
+
+    unsigned char min_rgb[3] = {255,255,255};
+    unsigned char max_rgb[3] = {0,0,0};
+
     for ( int i=0; i<xsize*ysize; i++ )
     {
         unsigned char r = clampnround(256*rgb[i].r);
         unsigned char g = clampnround(256*rgb[i].g);
         unsigned char b = clampnround(256*rgb[i].b);
+
+        min_rgb[0] = std::min(min_rgb[0],r);
+        min_rgb[1] = std::min(min_rgb[1],g);
+        min_rgb[2] = std::min(min_rgb[2],b);
+
+        max_rgb[0] = std::max(max_rgb[0],r);
+        max_rgb[1] = std::max(max_rgb[1],g);
+        max_rgb[2] = std::max(max_rgb[2],b);
+    }
+
+    float r_scale = 1.0;
+    float g_scale = 1.0;
+    float b_scale = 1.0;
+    for ( int i=0; i<xsize*ysize; i++ )
+    {
+        unsigned char r = clampnround(256*rgb[i].r*r_scale);
+        unsigned char g = clampnround(256*rgb[i].g*g_scale);
+        unsigned char b = clampnround(256*rgb[i].b*b_scale);
         ofs.write((char*)&r,sizeof(char));
         ofs.write((char*)&g,sizeof(char));
         ofs.write((char*)&b,sizeof(char));
@@ -93,27 +117,37 @@ smg::RayTrace gRayTrace;
 // ... and the input file reading function
 void read_input_file(std::string filename)
 {
-    ifstream ifs(filename.c_str());
-    assert(ifs);
+    ifstream ifs_file(filename.c_str());
+    assert(ifs_file);
 
-    double viewpoint[3];
-    double screen_lower_left_corner[3];
-    double screen_horizontal_vector[3];
-    double screen_vertical_vector[3];
-    double light_source[3];
-    double light_intensity;
-    double ambient_light_intensity;
+    float viewpoint[3];
+    float screen_lower_left_corner[3];
+    float screen_horizontal_vector[3];
+    float screen_vertical_vector[3];
+    float light_source[3];
+    float light_intensity;
+    float ambient_light_intensity;
     int number_of_primitives;
     int max_number_photons;
 
 
     int version;
+    std::string line;
+    std::stringstream ifs;
+    while(ifs_file)
+    {
+        std::getline(ifs_file,line);
+        if(not line.empty() and line.find('#') == std::string::npos)
+        {
+            ifs << line << std::endl;
+        }
+    }
     ifs >> version;
     std::cout << "Version: " << version << std::endl;
-    std::cout << "Enable Photon Map: " << gRayTrace.GetEnablePhotonMapper() << std::endl;
     if( version == 1 )
     {
         ifs >> max_number_photons;
+        std::cout << "Max Number Photons: " << max_number_photons << std::endl;
         if( max_number_photons > 0 )
         {
             gRayTrace.SetEnablePhotonMapper( true );
@@ -122,24 +156,36 @@ void read_input_file(std::string filename)
             gRayTrace.SetEnablePhotonMapper( false );
         }
     }
-    std::cout << "Enabled? " << gRayTrace.GetEnablePhotonMapper( ) << std::endl;
-    if( version == 3 )
-    {
-        smg::Vector background_color;
-        ifs >> background_color.x
-            >> background_color.y
-            >> background_color.z;
-        gRayTrace.SetBackgroundColor( background_color );
-    }
+    std::cout << "Photon Mapper Enabled: " << gRayTrace.GetEnablePhotonMapper( ) << std::endl;
+
     ifs >> resolution_x >> resolution_y;
+    std::cout << "Resolution: " << resolution_x << ", " << resolution_y << std::endl;
     ifs >> viewpoint[0] >> viewpoint[1] >> viewpoint[2];
+    std::cout << "Viewpoint: " << viewpoint[0]<<", " << viewpoint[1] <<", " << viewpoint[2] << std::endl;
     ifs >> screen_lower_left_corner[0] >> screen_lower_left_corner[1] >> screen_lower_left_corner[2];
     ifs >> screen_horizontal_vector[0] >> screen_horizontal_vector[1] >> screen_horizontal_vector[2];
     ifs >> screen_vertical_vector[0] >> screen_vertical_vector[1] >> screen_vertical_vector[2];
     ifs >> light_source[0] >> light_source[1] >> light_source[2];
+    std::cout << "Light Source: " << light_source[0] << ", "
+                                  << light_source[1] << ", "
+                                  << light_source[2] << ", "
+                                  << std::endl;
     ifs >> light_intensity;
+    std::cout << "Light Intensity : " << light_intensity << std::endl;
     ifs >> ambient_light_intensity;
     ifs >> number_of_primitives;
+
+    int enable_ray_trace(0);
+    ifs >> enable_ray_trace;
+    gRayTrace.SetEnableRayTrace(enable_ray_trace);
+
+    int enable_photon_map(0);
+    ifs >> enable_photon_map;
+    gRayTrace.SetEnablePhotonMap(enable_photon_map);
+
+    int enable_caustic(0);
+    ifs >> enable_caustic;
+    gRayTrace.SetEnableCaustic(enable_caustic);
 
     gRayTrace.ResolutionX( resolution_x );
     gRayTrace.ResolutionY( resolution_y );
@@ -183,13 +229,13 @@ void read_input_file(std::string filename)
             case 's':
             case 'S':
                 {
-                    double center[3];
-                    double radius;
-                    double k_diffuse[3];
-                    double k_ambient[3];
-                    double k_specular;
-                    double n_specular;
-                    double index(0);
+                    float center[3];
+                    float radius;
+                    float k_diffuse[3];
+                    float k_ambient[3];
+                    float k_specular;
+                    float n_specular;
+                    float index(0);
                     int mirror_glass(0);
 
 
@@ -240,14 +286,14 @@ void read_input_file(std::string filename)
             case 'T':
             case 't':
                 {
-                    double a1[3];
-                    double a2[3];
-                    double a3[3];
-                    double k_diffuse[3];
-                    double k_ambient[3];
-                    double k_specular;
-                    double n_specular;
-                    double index;
+                    float a1[3];
+                    float a2[3];
+                    float a3[3];
+                    float k_diffuse[3];
+                    float k_ambient[3];
+                    float k_specular;
+                    float n_specular;
+                    float index;
                     int mirror_glass(0);
 
 
@@ -306,7 +352,7 @@ void read_input_file(std::string filename)
 
 /* ----------- function prototypes ---------- */
 void
-Once( double x, double y, double& R, double& G, double& B );
+Once( float x, float y, float& R, float& G, float& B );
 
 void emit_photons(void);
 
@@ -322,7 +368,7 @@ int main ( int argc, char *argv[] )
     else if( argc == 3 )
     {
         filename = argv[1];
-        gRayTrace.AliasSize( double(atoi(argv[2])) );
+        gRayTrace.AliasSize( float(atoi(argv[2])) );
     }
     else
     {
@@ -342,14 +388,14 @@ int main ( int argc, char *argv[] )
     std::cout << "Begin Rendering" << std::endl;
 
     image img(resolution_x,resolution_y);
-    double current(0.0);
-    double total( resolution_x*resolution_y );
+    float current(0.0);
+    float total( resolution_x*resolution_y );
     for ( x=0; x<resolution_x; x++ )
         for ( y=0; y<resolution_y; y++ )
         {
             RGB &pix = img.pixel(x,y);
 
-            Once(double(x), double(y), pix.r, pix.g, pix.b );
+            Once(float(x), float(y), pix.r, pix.g, pix.b );
 
             if( int(current) % 100 == 0 ) {
                 std::cout << current/total*100.0 << "%\r";
@@ -375,23 +421,22 @@ int main ( int argc, char *argv[] )
 
 
 void
-Once( double xi, double yi, double& Rin, double& Gin, double& Bin )
+Once( float xi, float yi, float& Rin, float& Gin, float& Bin )
 {
-    double alias_size = gRayTrace.GetAliasSize();
+    float alias_size = gRayTrace.GetAliasSize();
     int count = 0;
-    double x, y;
-
+    float x, y;
  
-    for( double xstep = xi; xstep < xi+1; xstep += 1.0/alias_size )
+    for( float xstep = xi; xstep < xi+1; xstep += 1.0/alias_size )
     {
-        double xoffset = (1.0/alias_size * (rand() / (RAND_MAX + 1.0)));
+        float xoffset = (1.0/alias_size * (rand() / (RAND_MAX + 1.0)));
         x = xstep + (alias_size > 1.0?xoffset:0.0);
 
-        for( double ystep = yi; ystep < yi+1; ystep += 1.0/alias_size )
+        for( float ystep = yi; ystep < yi+1; ystep += 1.0/alias_size )
         {
 
             // Compute the offset due for aliasing 
-            double yoffset = (1.0/alias_size * (rand() / (RAND_MAX + 1.0)));
+            float yoffset = (1.0/alias_size * (rand() / (RAND_MAX + 1.0)));
             y = ystep + (alias_size > 1.0?yoffset:0.0);
             count++; // for averaging the aliasing intensity
 
@@ -411,8 +456,8 @@ Once( double xi, double yi, double& Rin, double& Gin, double& Bin )
         }
     }
 
-    Rin /= double( count );
-    Gin /= double( count );
-    Bin /= double( count );
+    Rin /= float( count );
+    Gin /= float( count );
+    Bin /= float( count );
 }
 

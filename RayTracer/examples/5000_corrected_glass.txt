@@ -1,0 +1,191 @@
+
+###############################
+## Example input file for the
+## raytracer.
+###############################
+
+# version
+1
+
+# max number photons 
+1000
+
+# resolution x y
+512 512
+
+# view point x y z
+0 0 20
+
+# screen lower left corner x y z
+-1 -1 1
+
+# screen horizontal vector x y z
+2 0 0
+
+# screen vertical vector x y z
+0 2 0
+
+# light source x y z 
+0.0 0.2 0.5
+
+# light intensity
+100.0
+
+# ambient light intensity
+#0.2
+0.4
+
+# number primitives
+10
+
+# enable ray trace 0 false 1 true
+0
+
+# enable photon map 0 false 1 true
+1
+
+# enable caustic 0 false 1 true
+0
+
+###############################
+# Primitive 1
+# [T]riangle
+T
+# Version
+0
+# a1 x y z
+1 1 1
+# a2 x y z
+0.12321 0.12321 -1
+# a3 x y z
+-1 1 1
+# k_diffuse r g b
+1.0 1.0 1.0 
+# k_ambient r g b
+1 1 1 
+# k_specular n_specular
+0.0 1
+###############################
+
+###############################
+# Primitive 2
+# [T]riangle
+T
+# 0 - normal, 1 - mirror, 2 - glass
+0
+# a1 x y z
+-0.12321 0.12321 -1
+# a2 x y z
+-1 1 1
+# a3 x y z
+0.12321 0.12321 -1
+# k_diffuse r g b
+1 1 1 
+# k_ambient r g b
+1 1 1
+# k_specular n_specular
+0 1
+###############################
+
+###############################
+# Primitive 3
+T
+0
+0.12321 -0.12321 -1
+1 -1 1
+-1 -1 1
+1 1 1 1 1 1 0 1
+###############################
+
+###############################
+# Primitive 4
+T
+0
+-1 -1 1
+-0.12321 -0.12321 -1
+0.12321 -0.12321 -1
+1 1 1 1 1 1 0 1
+###############################
+
+###############################
+# Primitive 5
+T
+0
+0.12321 0.12321 -1
+1 1 1
+1 -1 1
+1 0 0 1 0 0 0 1
+###############################
+
+###############################
+# Primitive 6
+T
+0
+1 -1 1
+0.12321 -0.12321 -1
+0.12321 0.12321 -1
+1 0 0 1 0 0 0 1
+###############################
+
+###############################
+# Primitive 7
+T
+0
+-1 1 1
+-0.12321 0.12321 -1
+-1 -1 1
+1 1 0 1 1 0 0 1
+###############################
+
+###############################
+# Primitive 8
+T
+0
+-0.12321 -0.12321 -1
+-1 -1 1
+-0.12321 0.12321 -1
+1 1 0 1 1 0 0 1
+###############################
+
+###############################
+# Primitive 9
+# [S]phere
+S
+# 1 - mirror, 2 - glass
+2
+# center x y z
+#-0.4 -.53 0.6 
+-0.3 -.43 0.3 
+# radius
+0.25
+# k_diffuse
+0.01 0 0.01 
+# k_ambient 
+0.01 0.01 0.01
+# k_specular n_specular
+0.8 1
+###############################
+
+###############################
+# Primitive 10
+# [S]phere
+S
+# 1 - mirror, 2 - glass
+#1
+1
+# center x y z
+0.3 -.45 0.3 
+# radius
+0.25
+# k_diffuse r g b
+0.01 0 0.01 
+#1 1 1
+# k_ambient r g b
+0.01 0.01 0.01 
+#1 1 1
+# k_specular n_specular
+0 1
+###############################
+
+
+
