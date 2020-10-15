@@ -13,5 +13,4 @@ make install
 ```
 
 ## Results
-![Alt text](output_test.ppm?raw=true "RayTraced Image")
-
+![Result](output_test.ppm)
