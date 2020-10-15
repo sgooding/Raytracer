@@ -48,7 +48,7 @@ endif()
 # Adds fmt::fmt
 
 # The compiled library code is here
-add_subdirectory(src)
+add_subdirectory(src/ann)
 
 # The executable code is here
 add_subdirectory(apps)
