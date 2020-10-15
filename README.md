@@ -13,4 +13,4 @@ make install
 ```
 
 ## Results
-![Result](output_test.ppm)
+![Result](output_test.jpg)
