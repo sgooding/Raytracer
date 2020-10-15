@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/raytracer.dir/PhotonMapAnn.cpp.o CMakeFiles/raytracer.dir/Primitives.cpp.o CMakeFiles/raytracer.dir/RayTrace.cpp.o CMakeFiles/raytracer.dir/Vector.cpp.o CMakeFiles/raytracer.dir/main.cpp.o CMakeFiles/raytracer.dir/photon_map.cpp.o  -o raytracer ../src/libann.a 
