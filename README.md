@@ -11,6 +11,10 @@ cmake ..
 make
 make install
 ```
-
+## Run
+```
+cd ..
+build/app/raytrace 
+```
 ## Results
 ![Result](output_test.jpg)
