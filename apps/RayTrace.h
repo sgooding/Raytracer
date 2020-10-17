@@ -12,6 +12,7 @@
 
 #include "Primitives.h"
 #include "PhotonMapAnn.h"
+#include "image.h"
 
 #include <math.h>
 #include <vector>
@@ -34,6 +35,8 @@ class RayTrace
 
         /// Default destructor
         ~RayTrace();
+
+        void RenderImage(image& img);
     
         void ComputeBRDF( const primitive& Primitive, const Vector& position, const Vector& incoming_direction, const Vector& outgoing_direction, bool in_shade, float& R, float& G, float& B );
 
@@ -114,44 +117,8 @@ class RayTrace
         }
     private:
 
-        RayTrace(const RayTrace& other) :
-        mBackgroundColor       (other.mBackgroundColor       ),
-        mPhotonMap             (other.mPhotonMap             ),
-        mCausticMap             (other.mCausticMap             ),
-        mEnablePhotonMapper    (other.mEnablePhotonMapper    ),
-        mLightSource           (other.mLightSource           ),
-        mLightSourceIntensity  (other.mLightSourceIntensity  ),
-        mViewPoint             (other.mViewPoint             ),
-        mAmbientLight          (other.mAmbientLight          ),
-        mScreenLowerLeftCorner (other.mScreenLowerLeftCorner ),
-        mScreenHorizontalVector(other.mScreenHorizontalVector),
-        mScreenVerticalVector  (other.mScreenVerticalVector  ),
-        mResolutionY           (other.mResolutionY           ),
-        mResolutionX           (other.mResolutionX           ),
-        mAliasSize             (other.mAliasSize             ),
-        mMaxNumberPhotons      (other.mMaxNumberPhotons      ),
-        mPrimitives            (other.mPrimitives            )
-        {}
-
-        RayTrace operator=(const RayTrace& other)
-        {
-            mBackgroundColor       =other.mBackgroundColor       ;
-            mPhotonMap             =other.mPhotonMap             ;
-            mCausticMap             =other.mCausticMap             ;
-            mEnablePhotonMapper    =other.mEnablePhotonMapper    ;
-            mLightSource           =other.mLightSource           ;
-            mLightSourceIntensity  =other.mLightSourceIntensity  ;
-            mViewPoint             =other.mViewPoint             ;
-            mAmbientLight          =other.mAmbientLight          ;
-            mScreenLowerLeftCorner =other.mScreenLowerLeftCorner ;
-            mScreenHorizontalVector=other.mScreenHorizontalVector;
-            mScreenVerticalVector  =other.mScreenVerticalVector  ;
-            mResolutionY           =other.mResolutionY           ;
-            mResolutionX           =other.mResolutionX           ;
-            mAliasSize             =other.mAliasSize             ;
-            mMaxNumberPhotons      =other.mMaxNumberPhotons      ;
-            mPrimitives            =other.mPrimitives            ;
-        }
+        RayTrace(const RayTrace& );
+        RayTrace& operator=(const RayTrace& );
 
         Vector mLightSource;
         float mLightSourceIntensity;
@@ -199,6 +166,9 @@ class RayTrace
     ray GetRefractedRay(int prev_primitive, int curr_primitive,  const ray& original_ray, float distance);
     
     ray GetDiffuseReflectedRay( const primitive& Primitive, const ray& original_ray, float distance );
+
+    void Once(float xi, float yi, float &Rin, float &Gin, float &Bin);
+
 };
 
 }

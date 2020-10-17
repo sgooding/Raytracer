@@ -668,4 +668,62 @@ namespace smg{
         mPhotonMap->balance();
     }
 
+    void RayTrace::RenderImage(image& img)
+    {
+        float current(0.0);
+        for (int x = 0; x < img.xsize; x++)
+        {
+            for (int y = 0; y < img.ysize; y++)
+            {
+                RGB &pix = img.pixel(x, y);
+
+                Once(float(x), float(y), pix.r, pix.g, pix.b);
+
+                if (int(current) % 100 == 0)
+                {
+                    std::cout << current / float(img.total) * 100.0 << "%\r";
+                    std::cout.flush();
+                }
+                current++;
+            }
+        }
+    }
+
+    void RayTrace::Once(float xi, float yi, float &Rin, float &Gin, float &Bin)
+    {
+        float alias_size = GetAliasSize();
+        int count = 0;
+        float x, y;
+
+        for (float xstep = xi; xstep < xi + 1; xstep += 1.0 / alias_size)
+        {
+            float xoffset = (1.0 / alias_size * (rand() / (RAND_MAX + 1.0)));
+            x = xstep + (alias_size > 1.0 ? xoffset : 0.0);
+
+            for (float ystep = yi; ystep < yi + 1; ystep += 1.0 / alias_size)
+            {
+
+                // Compute the offset due for aliasing
+                float yoffset = (1.0 / alias_size * (rand() / (RAND_MAX + 1.0)));
+                y = ystep + (alias_size > 1.0 ? yoffset : 0.0);
+                count++; // for averaging the aliasing intensity
+
+                // Compute the initial ray to the closest primitive
+                smg::ray eye_ray;
+                DirectionVector(x, // Image Point X
+                                          y, // Image Point Y
+                                          eye_ray);
+
+                smg::Vector color = trace_ray(-1, eye_ray);
+
+                Rin += color.x;
+                Gin += color.y;
+                Bin += color.z;
+            }
+        }
+
+        Rin /= float(count);
+        Gin /= float(count);
+        Bin /= float(count);
+    }
 }
