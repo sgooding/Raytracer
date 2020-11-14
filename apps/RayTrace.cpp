@@ -35,6 +35,47 @@ namespace smg{
     {
     }
 
+    bool RayTrace::initialize_params(const Params& params)
+    {
+
+        if(params.version == 1)
+        {
+            SetEnablePhotonMapper(params.max_number_photons>0);
+        }
+
+        SetEnableRayTrace(params.enable_ray_trace);
+        SetEnablePhotonMap(params.enable_photon_map);
+        SetEnableCaustic(enablems.enable_caustic);
+        ResolutionX(params.resolution_x())
+        ResolutionY(params.resolution_y())
+        ViewPoint(smg::Vector(
+            params.viewpoint[0], 
+            params.viewpoint[1], 
+            params.viewpoint[2]));
+        LightSource(smg::Vector(
+            params.light_source[0], 
+            params.light_source[1], 
+            params.light_source[2]));
+        LightSourceIntensity(params.light_intensity);
+        AmbientLight(params.ambient_light_intensity);
+        ScreenLowerLeftCorner(smg::Vector(
+            params.screen_lower_left_corner[0],
+            params.screen_lower_left_corner[1],
+            params.screen_lower_left_corner[2]));
+        ScreenHorizontalVector(smg::Vector(
+            params.screen_horizontal_vector[0],
+            params.screen_horizontal_vector[1],
+            params.screen_horizontal_vector[2]));
+        ScreenVerticalVector(smg::Vector(
+            params.screen_vertical_vector[0],
+            params.screen_vertical_vector[1],
+            params.screen_vertical_vector[2]));
+    
+        MaxNumberPhotons(params.max_number_photons);
+
+        return true;
+    }
+
     void RayTrace::AddPrimitive( smg::primitive* pprimitive )
     {
         pprimitive->compute_probs();

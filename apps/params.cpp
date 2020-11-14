@@ -2,25 +2,13 @@
 
 using namespace smg;
 
-void Params::read_input_file(smg::RayTrace& gRayTrace, 
-                             std::vector<primitive*>& gpPrimitives,
+void Params::read_input_file( std::vector<primitive*>& gpPrimitives,
                              const std::string& filename)
 {
     ifstream ifs_file(filename.c_str());
     assert(ifs_file);
 
-    float viewpoint[3];
-    float screen_lower_left_corner[3];
-    float screen_horizontal_vector[3];
-    float screen_vertical_vector[3];
-    float light_source[3];
-    float light_intensity;
-    float ambient_light_intensity;
-    int number_of_primitives;
-    int max_number_photons;
-    int resolution_x, resolution_y;
-
-    int version;
+    //int version;
     std::string line;
     std::stringstream ifs;
     while (ifs_file)
@@ -31,27 +19,27 @@ void Params::read_input_file(smg::RayTrace& gRayTrace,
             ifs << line << std::endl;
         }
     }
+
     ifs >> version;
+
     std::cout << "Version: " << version << std::endl;
     if (version == 1)
     {
         ifs >> max_number_photons;
         std::cout << "Max Number Photons: " << max_number_photons << std::endl;
-        if (max_number_photons > 0)
-        {
-            gRayTrace.SetEnablePhotonMapper(true);
-        }
-        else
-        {
-            gRayTrace.SetEnablePhotonMapper(false);
-        }
+        //if (max_number_photons > 0)
+        //{
+        //    gRayTrace.SetEnablePhotonMapper(true);
+        //}
+        //else
+        //{
+        //    gRayTrace.SetEnablePhotonMapper(false);
+        //}
     }
-    std::cout << "Photon Mapper Enabled: " << gRayTrace.GetEnablePhotonMapper() << std::endl;
+    //std::cout << "Photon Mapper Enabled: " << gRayTrace.GetEnablePhotonMapper() << std::endl;
 
-    ifs >> resolution_x >> resolution_y;
-    _resolution_x = resolution_x;
-    _resolution_y = resolution_y;
-    std::cout << "Resolution: " << resolution_x << ", " << resolution_y << std::endl;
+    ifs >> _resolution_x >> _resolution_y;
+    std::cout << "Resolution: " << _resolution_x << ", " << _resolution_y << std::endl;
     ifs >> viewpoint[0] >> viewpoint[1] >> viewpoint[2];
     std::cout << "Viewpoint: " << viewpoint[0] << ", " << viewpoint[1] << ", " << viewpoint[2] << std::endl;
     ifs >> screen_lower_left_corner[0] >> screen_lower_left_corner[1] >> screen_lower_left_corner[2];
@@ -69,36 +57,37 @@ void Params::read_input_file(smg::RayTrace& gRayTrace,
 
     int enable_ray_trace(0);
     ifs >> enable_ray_trace;
-    gRayTrace.SetEnableRayTrace(enable_ray_trace);
+    //gRayTrace.SetEnableRayTrace(enable_ray_trace);
 
     int enable_photon_map(0);
     ifs >> enable_photon_map;
-    gRayTrace.SetEnablePhotonMap(enable_photon_map);
+    //gRayTrace.SetEnablePhotonMap(enable_photon_map);
 
     int enable_caustic(0);
     ifs >> enable_caustic;
-    gRayTrace.SetEnableCaustic(enable_caustic);
+    //gRayTrace.SetEnableCaustic(enable_caustic);
 
-    gRayTrace.ResolutionX(resolution_x);
-    gRayTrace.ResolutionY(resolution_y);
-    gRayTrace.ViewPoint(smg::Vector(viewpoint[0], viewpoint[1], viewpoint[2]));
-    gRayTrace.LightSource(smg::Vector(light_source[0], light_source[1], light_source[2]));
-    gRayTrace.LightSourceIntensity(light_intensity);
-    gRayTrace.AmbientLight(ambient_light_intensity);
-    gRayTrace.ScreenLowerLeftCorner(smg::Vector(
-        screen_lower_left_corner[0],
-        screen_lower_left_corner[1],
-        screen_lower_left_corner[2]));
-    gRayTrace.ScreenHorizontalVector(smg::Vector(
-        screen_horizontal_vector[0],
-        screen_horizontal_vector[1],
-        screen_horizontal_vector[2]));
-    gRayTrace.ScreenVerticalVector(smg::Vector(
-        screen_vertical_vector[0],
-        screen_vertical_vector[1],
-        screen_vertical_vector[2]));
+    //gRayTrace.ResolutionX(resolution_x);
+    //gRayTrace.ResolutionY(resolution_y);
 
-    gRayTrace.MaxNumberPhotons(max_number_photons);
+    //gRayTrace.ViewPoint(smg::Vector(viewpoint[0], viewpoint[1], viewpoint[2]));
+    //gRayTrace.LightSource(smg::Vector(light_source[0], light_source[1], light_source[2]));
+    //gRayTrace.LightSourceIntensity(light_intensity);
+    //gRayTrace.AmbientLight(ambient_light_intensity);
+    //gRayTrace.ScreenLowerLeftCorner(smg::Vector(
+    //    screen_lower_left_corner[0],
+    //    screen_lower_left_corner[1],
+    //    screen_lower_left_corner[2]));
+    //gRayTrace.ScreenHorizontalVector(smg::Vector(
+    //    screen_horizontal_vector[0],
+    //    screen_horizontal_vector[1],
+    //    screen_horizontal_vector[2]));
+    //gRayTrace.ScreenVerticalVector(smg::Vector(
+    //    screen_vertical_vector[0],
+    //    screen_vertical_vector[1],
+    //    screen_vertical_vector[2]));
+
+    //gRayTrace.MaxNumberPhotons(max_number_photons);
 
     // Initialize the photon map
     if (gRayTrace.GetEnablePhotonMapper())

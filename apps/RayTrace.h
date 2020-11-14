@@ -13,6 +13,7 @@
 #include "Primitives.h"
 #include "PhotonMapAnn.h"
 #include "image.h"
+#include "params.h"
 
 #include <math.h>
 #include <vector>
@@ -41,6 +42,8 @@ class RayTrace
         void ComputeBRDF( const primitive& Primitive, const Vector& position, const Vector& incoming_direction, const Vector& outgoing_direction, bool in_shade, float& R, float& G, float& B );
 
         bool InitializeMap(int maxNumPhotons );
+
+        bool initialize_params(const Params& params);
 
         void compute_multipath( const primitive& Primitive, 
                                 ray origin, 
