@@ -5,40 +5,29 @@
    CSCI 441
  */
 
-#include <math.h>
-#include <fstream>
-#include <sstream>
 #include <iostream>
-#include <assert.h>
-#include "Vector.h"
 #include "Primitives.h"
 #include "RayTrace.h"
 #include "RayTraceConfig.h"
 #include "RenderEngine.h"
 #include "Image.h"
 #include <vector>
-#include <stdlib.h>
 
 using namespace std;
-
-/* ----------- Reading the input file ---------- */
-
-// global variables
-int resolution_x, resolution_y;
-std::vector<smg::primitive *> gpPrimitives;
-smg::RayTrace gRayTrace;
-RayTraceConfig gRayTraceConfig;
-RenderEngine gRenderEngine;
-
-/* ----------- function prototypes ---------- */
-void Once(float x, float y, float &R, float &G, float &B);
-
-void emit_photons(void);
 
 /* ----------- main function ---------- */
 int main(int argc, char *argv[])
 {
+
+    // global variables
+    int resolution_x, resolution_y;
+    std::vector<smg::primitive *> gpPrimitives;
+    smg::RayTrace gRayTrace;
+    RayTraceConfig gRayTraceConfig;
+    RenderEngine gRenderEngine;
+
     std::string filename("input.txt");
+
     if (argc == 2)
     {
         filename = argv[1];
@@ -53,8 +42,6 @@ int main(int argc, char *argv[])
     {
         gRayTrace.AliasSize(2.0);
     }
-
-    int x, y;
 
     gRayTraceConfig.read_input_file(filename, gRayTrace, gpPrimitives, resolution_x, resolution_y);
 
