@@ -20,4 +20,10 @@ struct RGB
     float b;
 };
 
+struct Point2D
+{
+    int x;
+    int y;
+};
+
 #endif

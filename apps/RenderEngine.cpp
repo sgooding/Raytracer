@@ -4,11 +4,10 @@
 
 using namespace smg;
 
-void RenderEngine::Render(image& img, 
-                        RayTrace& gRayTrace,
-                        int& resolution_x,
-                        int& resolution_y)
+void RenderEngine::Render(image& img, RayTrace& gRayTrace)
 {
+    int resolution_x(gRayTrace.GetResolution().x);
+    int resolution_y(gRayTrace.GetResolution().y);
     float current(0.0);
     float total(resolution_x * resolution_y);
     for (int x = 0; x < resolution_x; x++)

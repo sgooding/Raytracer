@@ -10,10 +10,7 @@
 using namespace std;
 
 void RayTraceConfig::read_input_file( std::string filename, 
-                                      smg::RayTrace& gRayTrace,
-                                      std::vector<smg::primitive *>& gpPrimitives,
-                                      int& resolution_x,
-                                      int& resolution_y )
+                                      smg::RayTrace& gRayTrace )
 {
     ifstream ifs_file(filename.c_str());
     assert(ifs_file);
@@ -56,6 +53,7 @@ void RayTraceConfig::read_input_file( std::string filename,
     }
     std::cout << "Photon Mapper Enabled: " << gRayTrace.GetEnablePhotonMapper() << std::endl;
 
+    int resolution_x, resolution_y;
     ifs >> resolution_x >> resolution_y;
     std::cout << "Resolution: " << resolution_x << ", " << resolution_y << std::endl;
     ifs >> viewpoint[0] >> viewpoint[1] >> viewpoint[2];
@@ -85,8 +83,10 @@ void RayTraceConfig::read_input_file( std::string filename,
     ifs >> enable_caustic;
     gRayTrace.SetEnableCaustic(enable_caustic);
 
-    gRayTrace.ResolutionX(resolution_x);
-    gRayTrace.ResolutionY(resolution_y);
+    gRayTrace.SetResolution(resolution_x, resolution_y);
+
+    //gRayTrace.ResolutionX(resolution_x);
+    //gRayTrace.ResolutionY(resolution_y);
     gRayTrace.ViewPoint(smg::Vector(viewpoint[0], viewpoint[1], viewpoint[2]));
     gRayTrace.LightSource(smg::Vector(light_source[0], light_source[1], light_source[2]));
     gRayTrace.LightSourceIntensity(light_intensity);
@@ -126,34 +126,22 @@ void RayTraceConfig::read_input_file( std::string filename,
         {
             float center[3];
             float radius;
-            float k_diffuse[3];
-            float k_ambient[3];
-            float k_specular;
-            float n_specular;
             float index(0);
             int mirror_glass(0);
 
             if (version == 1)
+            {
                 ifs >> mirror_glass;
+            }
             ifs >> center[0] >> center[1] >> center[2];
             ifs >> radius;
-            ifs >> k_diffuse[0] >> k_diffuse[1] >> k_diffuse[2];
-            ifs >> k_ambient[0] >> k_ambient[1] >> k_ambient[2];
-            ifs >> k_specular >> n_specular;
-            //ifs >> index >> mirror;
+
 
             // add the sphere to your datastructures (primitive list, sphere list or such) here
             smg::primitive *pprimitive = new smg::sphere(smg::Vector(center[0], center[1], center[2]),
                                                          radius);
 
-            pprimitive->m.k_diff_R = k_diffuse[0];
-            pprimitive->m.k_diff_G = k_diffuse[1];
-            pprimitive->m.k_diff_B = k_diffuse[2];
-            pprimitive->m.k_ambient_R = k_ambient[0];
-            pprimitive->m.k_ambient_G = k_ambient[1];
-            pprimitive->m.k_ambient_B = k_ambient[2];
-            pprimitive->m.k_spec = k_specular;
-            pprimitive->m.n_spec = n_specular;
+            load_brdf(ifs, pprimitive);
 
             if (1)
             {
@@ -169,11 +157,7 @@ void RayTraceConfig::read_input_file( std::string filename,
                 }
             }
 
-            gpPrimitives.push_back(pprimitive);
-            (*(gpPrimitives.end() - 1))->Print();
-
-            smg::sphere *copy = dynamic_cast<smg::sphere *>(pprimitive);
-            gRayTrace.AddPrimitive(new smg::sphere(*copy));
+            gRayTrace.AddPrimitive(pprimitive);
         }
         break;
         case 'T':
@@ -182,39 +166,24 @@ void RayTraceConfig::read_input_file( std::string filename,
             float a1[3];
             float a2[3];
             float a3[3];
-            float k_diffuse[3];
-            float k_ambient[3];
-            float k_specular;
-            float n_specular;
             float index;
             int mirror_glass(0);
 
             if (version == 1)
                 ifs >> mirror_glass;
+
             ifs >> a1[0] >> a1[1] >> a1[2];
             ifs >> a2[0] >> a2[1] >> a2[2];
             ifs >> a3[0] >> a3[1] >> a3[2];
-            ifs >> k_diffuse[0] >> k_diffuse[1] >> k_diffuse[2];
-            ifs >> k_ambient[0] >> k_ambient[1] >> k_ambient[2];
-            ifs >> k_specular >> n_specular;
-            //ifs >> index >> mirror;
 
             // add the triangle to your datastructure (primitive list, sphere list or such) here
-
             smg::primitive *pprimitive = new smg::triangle(smg::Vector(a1[0], a1[1], a1[2]),
                                                            smg::Vector(a2[0], a2[1], a2[2]),
                                                            smg::Vector(a3[0], a3[1], a3[2]),
                                                            gRayTrace.GetViewPoint());
 
-            pprimitive->m.k_diff_R = k_diffuse[0];
-            pprimitive->m.k_diff_G = k_diffuse[1];
-            pprimitive->m.k_diff_B = k_diffuse[2];
-            pprimitive->m.k_ambient_R = k_ambient[0];
-            pprimitive->m.k_ambient_G = k_ambient[1];
-            pprimitive->m.k_ambient_B = k_ambient[2];
 
-            pprimitive->m.k_spec = k_specular;
-            pprimitive->m.n_spec = n_specular;
+            load_brdf(ifs, pprimitive);
 
             if (1)
             {
@@ -227,11 +196,7 @@ void RayTraceConfig::read_input_file( std::string filename,
                     pprimitive->m.n_index = 1.5;
             }
 
-            gpPrimitives.push_back(pprimitive);
-            (*(gpPrimitives.end() - 1))->Print();
-
-            smg::triangle *copy = dynamic_cast<smg::triangle *>(pprimitive);
-            gRayTrace.AddPrimitive(new smg::triangle(*copy));
+            gRayTrace.AddPrimitive(pprimitive);
         }
         break;
         default:
@@ -239,4 +204,23 @@ void RayTraceConfig::read_input_file( std::string filename,
             assert(0);
         }
     }
+}
+
+void RayTraceConfig::load_brdf(stringstream& ifs, smg::primitive *pprimitive)
+{
+    float k_diffuse[3];
+    float k_ambient[3];
+    float k_specular;
+    float n_specular;
+    ifs >> k_diffuse[0] >> k_diffuse[1] >> k_diffuse[2];
+    ifs >> k_ambient[0] >> k_ambient[1] >> k_ambient[2];
+    ifs >> k_specular >> n_specular;
+    pprimitive->m.k_diff_R = k_diffuse[0];
+    pprimitive->m.k_diff_G = k_diffuse[1];
+    pprimitive->m.k_diff_B = k_diffuse[2];
+    pprimitive->m.k_ambient_R = k_ambient[0];
+    pprimitive->m.k_ambient_G = k_ambient[1];
+    pprimitive->m.k_ambient_B = k_ambient[2];
+    pprimitive->m.k_spec = k_specular;
+    pprimitive->m.n_spec = n_specular;
 }
