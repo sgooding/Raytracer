@@ -13,6 +13,8 @@
 #include "Primitives.h"
 #include "PhotonMapAnn.h"
 
+#include "Types.h"
+
 #include <math.h>
 #include <vector>
 #include <list>
@@ -74,8 +76,8 @@ class RayTrace
         inline void ScreenLowerLeftCorner( Vector in ) { mScreenLowerLeftCorner = in; }
         inline void ScreenHorizontalVector( Vector in ) { mScreenHorizontalVector = in; }
         inline void ScreenVerticalVector( Vector in ) { mScreenVerticalVector = in; }
-        inline void ResolutionX( int in ) { mResolutionX = in; }
-        inline void ResolutionY( int in ) { mResolutionY = in; }
+        //inline void ResolutionX( int in ) { mResolutionX = in; }
+        //inline void ResolutionY( int in ) { mResolutionY = in; }
         inline void AliasSize( float alias ) { mAliasSize = alias; } 
         inline float GetAliasSize() { return mAliasSize; } 
         inline bool MapInitialized() { 
@@ -84,6 +86,13 @@ class RayTrace
         
         inline void MaxNumberPhotons( int in ) { mMaxNumberPhotons = in; }
         inline int GetMaxNumberPhotons() { return mMaxNumberPhotons; }
+
+        inline const Point2D& GetResolution() { return mResolution; }
+        inline void SetResolution(const int& x, const int& y)
+        { 
+            mResolution.x = x;
+            mResolution.y = y;
+        }
 
 
         void DirectionVector( float x, float y, ray& eq );
@@ -126,11 +135,12 @@ class RayTrace
         mScreenLowerLeftCorner (other.mScreenLowerLeftCorner ),
         mScreenHorizontalVector(other.mScreenHorizontalVector),
         mScreenVerticalVector  (other.mScreenVerticalVector  ),
-        mResolutionY           (other.mResolutionY           ),
-        mResolutionX           (other.mResolutionX           ),
+        //mResolutionY           (other.mResolutionY           ),
+        //mResolutionX           (other.mResolutionX           ),
         mAliasSize             (other.mAliasSize             ),
         mMaxNumberPhotons      (other.mMaxNumberPhotons      ),
-        mPrimitives            (other.mPrimitives            )
+        mPrimitives            (other.mPrimitives            ),
+        mResolution            (other.mResolution)
         {}
 
         RayTrace& operator=(const RayTrace& other)
@@ -146,6 +156,7 @@ class RayTrace
         Vector mScreenHorizontalVector;
         Vector mScreenVerticalVector;
         Vector mBackgroundColor;
+        Point2D mResolution;
 
 
         bool mEnablePhotonMapper;
@@ -154,8 +165,8 @@ class RayTrace
         bool mEnablePhotonMap;
         bool mEnableCaustic;
 
-        int mResolutionY;
-        int mResolutionX;
+        //int mResolutionY;
+        //int mResolutionX;
         float mAliasSize;
 
         int mMaxNumberPhotons;

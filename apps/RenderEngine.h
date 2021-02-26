@@ -9,9 +9,7 @@ class RenderEngine
 
 public:
     void Render(image &img,
-                smg::RayTrace &gRayTrace,
-                int &resolution_x,
-                int &resolution_y);
+                smg::RayTrace &gRayTrace);
 
 private:
     void Once(smg::RayTrace& gRayTrace,

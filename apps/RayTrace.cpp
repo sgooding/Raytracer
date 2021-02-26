@@ -27,8 +27,6 @@ namespace smg{
         mScreenVerticalVector  (),
         mEnableRayTrace        (false),
         mEnablePhotonMap       (false),
-        mResolutionY           (0),
-        mResolutionX           (0),
         mAliasSize             (1),
         mMaxNumberPhotons      (0),
         mPrimitives            (0)
@@ -237,7 +235,7 @@ namespace smg{
         }
         if( mPrimitives[new_object]->m.glass)
         {
-            int image_size( mResolutionX*mResolutionY );
+            int image_size( mResolution.x* mResolution.y );
 
             static bool reflecting = true;
             if( reflecting )
@@ -416,8 +414,8 @@ namespace smg{
     void RayTrace::DirectionVector(float  x, float y, ray& eq )
     {
         //TODO: preprocess these viewpoints
-        Vector dh = mScreenHorizontalVector*(float ( x)/float(mResolutionX));
-        Vector dv = mScreenVerticalVector*(float(mResolutionY - y)/float(mResolutionY));
+        Vector dh = mScreenHorizontalVector*(float ( x)/float(mResolution.x));
+        Vector dv = mScreenVerticalVector*(float(mResolution.y - y)/float(mResolution.y));
         eq.origin       = mViewPoint;
         eq.direction    = mScreenLowerLeftCorner + dh + dv - mViewPoint;
         eq.direction    = eq.direction*(1.0/eq.direction.mag());

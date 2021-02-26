@@ -20,8 +20,6 @@ int main(int argc, char *argv[])
 {
 
     // global variables
-    int resolution_x, resolution_y;
-    std::vector<smg::primitive *> gpPrimitives;
     smg::RayTrace gRayTrace;
     RayTraceConfig gRayTraceConfig;
     RenderEngine gRenderEngine;
@@ -43,25 +41,21 @@ int main(int argc, char *argv[])
         gRayTrace.AliasSize(2.0);
     }
 
-    gRayTraceConfig.read_input_file(filename, gRayTrace, gpPrimitives, resolution_x, resolution_y);
+    gRayTraceConfig.read_input_file(filename, gRayTrace);
 
     if (gRayTrace.GetEnablePhotonMapper())
     {
         gRayTrace.EmitPhotons();
     }
 
+    image img(gRayTrace.GetResolution().x, gRayTrace.GetResolution().y);
+
     std::cout << "Begin Rendering" << std::endl;
-    image img(resolution_x, resolution_y);
-    gRenderEngine.Render(img, gRayTrace, resolution_x, resolution_y);
+    gRenderEngine.Render(img, gRayTrace);
 
     /* save the image */
     img.save_to_ppm_file("output_test.ppm");
 
-    // clean up
-    for (int i = 0; i < gpPrimitives.size(); i++)
-    {
-        delete gpPrimitives[i];
-    }
 
     return 0;
 }
