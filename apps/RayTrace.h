@@ -133,24 +133,9 @@ class RayTrace
         mPrimitives            (other.mPrimitives            )
         {}
 
-        RayTrace operator=(const RayTrace& other)
+        RayTrace& operator=(const RayTrace& other)
         {
-            mBackgroundColor       =other.mBackgroundColor       ;
-            mPhotonMap             =other.mPhotonMap             ;
-            mCausticMap             =other.mCausticMap             ;
-            mEnablePhotonMapper    =other.mEnablePhotonMapper    ;
-            mLightSource           =other.mLightSource           ;
-            mLightSourceIntensity  =other.mLightSourceIntensity  ;
-            mViewPoint             =other.mViewPoint             ;
-            mAmbientLight          =other.mAmbientLight          ;
-            mScreenLowerLeftCorner =other.mScreenLowerLeftCorner ;
-            mScreenHorizontalVector=other.mScreenHorizontalVector;
-            mScreenVerticalVector  =other.mScreenVerticalVector  ;
-            mResolutionY           =other.mResolutionY           ;
-            mResolutionX           =other.mResolutionX           ;
-            mAliasSize             =other.mAliasSize             ;
-            mMaxNumberPhotons      =other.mMaxNumberPhotons      ;
-            mPrimitives            =other.mPrimitives            ;
+            return *this;
         }
 
         Vector mLightSource;
