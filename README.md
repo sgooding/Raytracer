@@ -14,7 +14,20 @@ make install
 ## Run
 ```
 cd ..
-build/app/raytrace 
+build/app/raytrace input.txt
 ```
+
 ## Results
 ![Result](output_test.jpg)
+
+## Deploy
+```
+mkdir build
+cd build
+cmake ..
+make package
+sudo dpkg -i Raytracker-*.deb
+
+# uninstall
+sudo dpkg -P raytracer
+```

@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.10...3.18)
 project(
   Raytracer
   VERSION 0.1
-  DESCRIPTION "A simple raytrace algorithm for my cs class"
+  DESCRIPTION "A simple raytrace algorithm"
   LANGUAGES CXX)
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
@@ -60,6 +60,11 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING)
   add_subdirectory(tests)
 endif()
 
+# installs examples directory to /usr/examples
+install(DIRECTORY 
+        "${PROJECT_SOURCE_DIR}/examples/" 
+        DESTINATION "examples")
+
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Sean")
 
@@ -67,4 +72,6 @@ include(CPack)
 
 # to use this run
 # make package
-# sudo dpkg -i 
+# sudo dpkg -i Raytrace*.deb
+# examples in /usr/examples
+# installed in /usr/bin/raytrace
