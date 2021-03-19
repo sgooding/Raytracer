@@ -7,7 +7,7 @@ FetchContent_MakeAvailable(catch)
 # Adds Catch2::Catch2
 
 # Tests need to be added as executables first
-add_executable(testlib testlib.cpp)
+add_executable(testlib testlib.cpp test_primitives.cpp)
 add_executable(testannlib test_ann.cpp)
 
 # I'm using C++17 in the test
