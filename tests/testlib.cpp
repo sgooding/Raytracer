@@ -5,3 +5,11 @@ TEST_CASE( "Quick check", "[main]" ) {
     REQUIRE( true );
 }
 
+TEST_CASE( "Quick check 2", "[main]" ) {
+    REQUIRE( true );
+}
+
+TEST_CASE( "Quick check 3", "[ANN]" ) {
+    REQUIRE( true );
+}
+
