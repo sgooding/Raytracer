@@ -8,8 +8,3 @@ TEST_CASE( "Quick check", "[main]" ) {
 TEST_CASE( "Quick check 2", "[main]" ) {
     REQUIRE( true );
 }
-
-SCENARIO( "Quick check 3", "[ANN]" ) {
-    REQUIRE( false );
-}
-
