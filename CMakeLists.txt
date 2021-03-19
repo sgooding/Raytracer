@@ -34,6 +34,13 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   #endif()
 endif()
 
+# FetchContent added in CMake 3.11, downloads during the configure step
+include(FetchContent)
+# FetchContent_MakeAvailable was not added until CMake 3.14; use our shim
+if(${CMAKE_VERSION} VERSION_LESS 3.14)
+  include(cmake/add_FetchContent_MakeAvailable.cmake)
+endif()
+
 # Accumulator library
 # This is header only, so could be replaced with git submodules or FetchContent
 #find_package(Boost REQUIRED)
