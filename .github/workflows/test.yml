@@ -10,10 +10,10 @@ env:
 jobs:
   ctest:
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
     - uses: actions/checkout@v2
-    - needs: Build
 
     - name: Test
       working-directory: ${{runner.workspace}}/build
