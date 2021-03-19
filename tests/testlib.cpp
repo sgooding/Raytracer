@@ -10,6 +10,6 @@ TEST_CASE( "Quick check 2", "[main]" ) {
 }
 
 TEST_CASE( "Quick check 3", "[ANN]" ) {
-    REQUIRE( true );
+    REQUIRE( false );
 }
 
