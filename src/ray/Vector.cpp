@@ -61,12 +61,16 @@ namespace smg
         return add(other);
     }
 
-    Vector Vector::cross(const Vector &a) const
+    Vector Vector::cross(const Vector &other) const
     {
+        //          | i     j   k  |
+        //  A x B = | 2   -3    1  |
+        //          | -2   1    1  |  
+
         Vector result;
-        result.x = y * a.z - z * a.y;
-        result.y = z * a.x - x * a.z;
-        result.z = x * a.y - y * a.x;
+        result.x = y * other.z - z * other.y;
+        result.y = z * other.x - x * other.z;
+        result.z = x * other.y - y * other.x;
         return result;
     }
 

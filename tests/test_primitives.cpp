@@ -84,3 +84,13 @@ TEST_CASE("Test Mag", "[primitive]")
 
     REQUIRE(mag == A.mag());
 }
+
+TEST_CASE("Test Cross", "[primitive]")
+{
+    Vector A(2., -3., 1.);
+    Vector B(-2., 1., 1.);
+    Vector C(A.cross(B));
+    REQUIRE(C.x == -4.0);
+    REQUIRE(C.y == -4.0);
+    REQUIRE(C.z == -4.0);
+}
