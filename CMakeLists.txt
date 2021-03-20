@@ -57,6 +57,8 @@ endif()
 # The compiled library code is here
 add_subdirectory(src/ann)
 
+add_subdirectory(src/ray)
+
 # The executable code is here
 add_subdirectory(apps)
 
