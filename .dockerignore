@@ -1,0 +1,7 @@
+.git
+build
+.vscode
+.github
+.devcontainer
+_deps
+CMakeCache.txt
