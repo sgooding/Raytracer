@@ -31,3 +31,10 @@ sudo dpkg -i Raytracker-*.deb
 # uninstall
 sudo dpkg -P raytracer
 ```
+
+## Docker
+```
+docker run -it -v /local/dir:/container/dir:rw ghcr.io/sgooding/raytracer:latest bash
+cd /container/dir
+raytracer /usr/local/examples/5000_corrected_glass.txt
+```
