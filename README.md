@@ -1,6 +1,14 @@
 # Raytracer
 ![CMake](https://github.com/sgooding/Raytracer/workflows/CMake/badge.svg)
 
+
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sgooding_Raytracer&metric=ncloc)](https://sonarcloud.io/dashboard?id=sgooding_Raytracer)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=sgooding_Raytracer&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=sgooding_Raytracer)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=sgooding_Raytracer&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=sgooding_Raytracer)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sgooding_Raytracer&metric=security_rating)](https://sonarcloud.io/dashboard?id=sgooding_Raytracer)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=sgooding_Raytracer&metric=bugs)](https://sonarcloud.io/dashboard?id=sgooding_Raytracer)
+
+
 Just a simple ray tracer program.
 
 ## Install
