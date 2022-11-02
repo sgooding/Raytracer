@@ -36,9 +36,10 @@ jobs:
           curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${{ env.BUILD_WRAPPER_DOWNLOAD_URL }}
           unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
           echo "$HOME/.sonar/build-wrapper-linux-x86" >> $GITHUB_PATH
+      - name: Setup Cmake
+        run: cmake -E make_directory ${{runner.workspace}}/build
       - name: Run build-wrapper
         run: |
-          cmake -E make_directory ${{runner.workspace}}/build
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build ${{runner.workspace}}/build --config Release
       - name: Run sonar-scanner
         env:
