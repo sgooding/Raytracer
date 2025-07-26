@@ -13,9 +13,8 @@ Just a simple ray tracer program.
 
 ## Install
 ```
-mkdir build
-cd build
-cmake ..
+cmake -S . -B build
+cd build/
 make
 make install
 ```

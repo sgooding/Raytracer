@@ -5,8 +5,9 @@ FetchContent_Declare(
   GIT_TAG v2.9.1)
 FetchContent_MakeAvailable(catch)
 # Adds Catch2::Catch2
-
+  
 # Tests need to be added as executables first
+add_definitions(-DCATCH_CONFIG_NO_POSIX_SIGNALS)
 add_executable(testlib testlib.cpp test_primitives.cpp)
 add_executable(testannlib test_ann.cpp)
 
